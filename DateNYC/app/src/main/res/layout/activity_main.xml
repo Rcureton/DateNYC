@@ -18,6 +18,7 @@
         android:id="@+id/dateNight"
         android:text="DATENYC"
         android:textSize="40sp"
+        android:textStyle="bold"
         android:layout_centerInParent="true"
         android:textColor="#ffffff"
         android:layout_width="wrap_content"
@@ -34,7 +35,8 @@
         android:layout_centerInParent="true"
         android:layout_below="@+id/dateNight"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" />
 
     <Button
         android:id="@+id/start"
@@ -46,5 +48,31 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="55dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/facebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/fb"
+        android:layout_below="@+id/slogan"
+        android:layout_alignLeft="@+id/slogan"
+        android:layout_alignStart="@+id/slogan" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/twitter"
+        android:src="@drawable/twitter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/facebook"
+        android:layout_centerHorizontal="true" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/instagram"
+        android:src="@drawable/instagram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/twitter"
+        android:layout_alignRight="@+id/slogan"
+        android:layout_alignEnd="@+id/slogan" />
 
 </RelativeLayout>
