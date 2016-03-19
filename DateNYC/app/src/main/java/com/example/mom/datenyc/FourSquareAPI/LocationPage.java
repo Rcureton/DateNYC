@@ -27,6 +27,7 @@ import com.squareup.picasso.Picasso;
 import com.yelp.clientlib.connection.YelpAPI;
 import com.yelp.clientlib.connection.YelpAPIFactory;
 import com.yelp.clientlib.entities.Business;
+import com.yelp.clientlib.entities.Region;
 import com.yelp.clientlib.entities.SearchResponse;
 
 
@@ -57,6 +58,9 @@ public class LocationPage extends AppCompatActivity {
     String CLIENT_SECRET = "A2YTKVC5HOCJ4NPXWAP5PZML2N1AEPDQX5SLG53MVLMV4HNP";
 
     FloatingActionButton mBk, mQu, mMa, mSi;
+
+    private String businessId = "joju-elmhurst";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,23 +101,34 @@ public class LocationPage extends AppCompatActivity {
 
 
     public void searchYelp() {
-        Map<String, String> params = new HashMap<>();
-        Call<SearchResponse> call = yelpAPI.search("San Francisco", params);
-        SearchResponse searchResponse = null;
-        try {
-            searchResponse = call.execute().body();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Callback<Business> callback = new Callback<Business>() {
+            @Override
+            public void onResponse(Response<Business> response, Retrofit retrofit) {
+                Business business = response.body();
+                String name= business.name();
+                double house= business.rating();
+                TextView textView= (TextView)findViewById(R.id.tvMessage);
+//                textView.setText(String.valueOf(house));
+                textView.setText(name);
+                // Update UI text with the Business object.
+            }
+            @Override
+            public void onFailure(Throwable t) {
+                // HTTP error happened, do something to handle it.
+            }
+        };
 
-        int totalNumberOfResult = searchResponse.total();  // 3
+        Call<Business> call = yelpAPI.getBusiness(businessId);
+        call.enqueue(callback);
 
-        ArrayList<Business> businesses = searchResponse.businesses();
-        String businessName = businesses.get(0).name();  // "JapaCurry Truck"
-        Double rating = businesses.get(0).rating();  // 4.0
-
-        Log.d("data", businessName);
+//        Response<Business> response = call.execute();
+//        Business business = response.body();
+//
+//        String businessName = business.name();  // "JapaCurry Truck"
+//        Double rating = business.rating();  // 4.0
+//
+//        Log.d("data", businessName);
 
     }
 }
