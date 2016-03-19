@@ -3,6 +3,8 @@
     package="com.example.mom.datenyc">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
 
     <application
         android:allowBackup="true"
@@ -18,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FourSquareAPI.Main2Activity"
+            android:name=".FourSquareAPI.LocationPage"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 

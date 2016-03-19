@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,15 +21,22 @@ import com.foursquare.android.nativeoauth.FoursquareOAuthException;
 import com.foursquare.android.nativeoauth.FoursquareUnsupportedVersionException;
 import com.foursquare.android.nativeoauth.model.AccessTokenResponse;
 import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
+import com.squareup.picasso.Picasso;
 
-public class Main2Activity extends AppCompatActivity {
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-    FloatingActionButton fab;
+public class LocationPage extends AppCompatActivity {
+
+    FloatingActionButton mBx;
+
 
     private static final int REQUEST_CODE_FSQ_CONNECT = 200;
     private static final int REQUEST_CODE_FSQ_TOKEN_EXCHANGE = 201;
     String CLIENT_ID= "I304IKBD3PKC0HMR0QAHODBI3KRWGHCYHO4G0LJOU5HROYL2";
     String CLIENT_SECRET= "A2YTKVC5HOCJ4NPXWAP5PZML2N1AEPDQX5SLG53MVLMV4HNP";
+
+    FloatingActionButton mBk,mQu, mMa, mSi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +45,36 @@ public class Main2Activity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        ImageView backgroundTwo= (ImageView)findViewById(R.id.backgroundTwo);
+
+        Picasso.with(LocationPage.this).load("https://s-media-cache-ak0.pinimg.com/564x/b6/f1/34/b6f1340783278be2c97535f2674f6f49.jpg").fit().into(backgroundTwo);
+
+        mBk= (FloatingActionButton)findViewById(R.id.brooklyn);
+        mBk.setImageResource(R.drawable.bk);
+
+        mBx = (FloatingActionButton) findViewById(R.id.fab);
+        mBx.setImageResource(R.drawable.bx);
+
+        mQu=(FloatingActionButton)findViewById(R.id.queens);
+        mQu.setImageResource(R.drawable.qu);
+
+        mMa=(FloatingActionButton)findViewById(R.id.manhattan);
+        mMa.setImageResource(R.drawable.ma);
+
+        mSi=(FloatingActionButton)findViewById(R.id.staten);
+        mSi.setImageResource(R.drawable.si);
+
+
 
         Intent intent = FoursquareOAuth.getConnectIntent(getApplicationContext(), CLIENT_ID);
         startActivityForResult(intent, REQUEST_CODE_FSQ_CONNECT);
     }
+
+    public static final String BASE_URL = "http://api.myservice.com/";
+    Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -61,18 +93,18 @@ public class Main2Activity extends AppCompatActivity {
         tvMessage.setVisibility(isAuthorized ? View.VISIBLE : View.GONE);
 
 
-        fab.setVisibility(isAuthorized ? View.GONE : View.VISIBLE);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mBx.setVisibility(isAuthorized ? View.GONE : View.VISIBLE);
+        mBx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Start the native auth flow.
-                Intent intent = FoursquareOAuth.getConnectIntent(Main2Activity.this, CLIENT_ID);
+                Intent intent = FoursquareOAuth.getConnectIntent(LocationPage.this, CLIENT_ID);
 
                 // If the device does not have the Foursquare app installed, we'd
                 // get an intent back that would open the Play Store for download.
                 // Otherwise we start the auth flow.
                 if (FoursquareOAuth.isPlayStoreIntent(intent)) {
-                    Toast.makeText(Main2Activity.this, "Doesn't Work", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LocationPage.this, "Doesn't Work", Toast.LENGTH_SHORT).show();
                     startActivity(intent);
                 } else {
                     startActivityForResult(intent, REQUEST_CODE_FSQ_CONNECT);
@@ -93,17 +125,17 @@ public class Main2Activity extends AppCompatActivity {
         } else {
             if (exception instanceof FoursquareCancelException) {
                 // Cancel.
-                Toast.makeText(Main2Activity.this, "Canceled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LocationPage.this, "Canceled", Toast.LENGTH_SHORT).show();
 
             } else if (exception instanceof FoursquareDenyException) {
                 // Deny.
-                Toast.makeText(Main2Activity.this, "Denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LocationPage.this, "Denied", Toast.LENGTH_SHORT).show();
 
             } else if (exception instanceof FoursquareOAuthException) {
                 // OAuth error.
                 String errorMessage = exception.getMessage();
                 String errorCode = ((FoursquareOAuthException) exception).getErrorCode();
-                Toast.makeText(Main2Activity.this, "errorMessage + \" [\" + errorCode + \"]\"", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LocationPage.this, "errorMessage + \" [\" + errorCode + \"]\"", Toast.LENGTH_SHORT).show();
 
             } else if (exception instanceof FoursquareUnsupportedVersionException) {
                 // Unsupported Fourquare app version on the device.
