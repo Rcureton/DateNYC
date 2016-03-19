@@ -1,33 +1,18 @@
 package com.example.mom.datenyc.FourSquareAPI;
 
-import android.app.ActionBar;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mom.datenyc.R;
-import com.foursquare.android.nativeoauth.FoursquareCancelException;
-import com.foursquare.android.nativeoauth.FoursquareDenyException;
-import com.foursquare.android.nativeoauth.FoursquareInvalidRequestException;
-import com.foursquare.android.nativeoauth.FoursquareOAuth;
-import com.foursquare.android.nativeoauth.FoursquareOAuthException;
-import com.foursquare.android.nativeoauth.FoursquareUnsupportedVersionException;
-import com.foursquare.android.nativeoauth.model.AccessTokenResponse;
-import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
 import com.squareup.picasso.Picasso;
 import com.yelp.clientlib.connection.YelpAPI;
 import com.yelp.clientlib.connection.YelpAPIFactory;
 import com.yelp.clientlib.entities.Business;
-import com.yelp.clientlib.entities.Region;
 import com.yelp.clientlib.entities.SearchResponse;
 
 
@@ -40,7 +25,6 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LocationPage extends AppCompatActivity {
 
@@ -79,12 +63,18 @@ public class LocationPage extends AppCompatActivity {
         mBk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchYelp();
+                getBusinesses();
             }
         });
 
         mBx = (FloatingActionButton) findViewById(R.id.fab);
         mBx.setImageResource(R.drawable.bx);
+        mBx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchBusinesses();
+            }
+        });
 
         mQu = (FloatingActionButton) findViewById(R.id.queens);
         mQu.setImageResource(R.drawable.qu);
@@ -99,8 +89,40 @@ public class LocationPage extends AppCompatActivity {
         yelpAPI = apiFactory.createAPI();
     }
 
+    public void searchBusinesses(){
 
-    public void searchYelp() {
+        Map<String, String> params = new HashMap<>();
+
+        // general params
+        params.put("term", "food");
+        params.put("limit", "5");
+
+
+
+
+        Callback<SearchResponse> callback = new Callback<SearchResponse>() {
+            @Override
+            public void onResponse(Response<SearchResponse> response, Retrofit retrofit) {
+                SearchResponse searchResponse = response.body();
+                // Update UI text with the searchResponse.
+               String bName= searchResponse.businesses().get(0).name();
+                TextView search= (TextView)findViewById(R.id.textView);
+                search.setText(bName);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                // HTTP error happened, do something to handle it.
+            }
+
+        };
+        Call<SearchResponse> call = yelpAPI.search("San Francisco", params);
+        call.enqueue(callback);
+
+    }
+
+
+    public void getBusinesses() {
 
         Callback<Business> callback = new Callback<Business>() {
             @Override
@@ -121,14 +143,6 @@ public class LocationPage extends AppCompatActivity {
 
         Call<Business> call = yelpAPI.getBusiness(businessId);
         call.enqueue(callback);
-
-//        Response<Business> response = call.execute();
-//        Business business = response.body();
-//
-//        String businessName = business.name();  // "JapaCurry Truck"
-//        Double rating = business.rating();  // 4.0
-//
-//        Log.d("data", businessName);
 
     }
 }
